@@ -13,6 +13,7 @@ import { useQueryClient } from 'react-query';
 
 function ProfilePage(props) {
     const queryClient = useQueryClient();
+    const getUserInfo = queryClient.getQueryData("getUserInfoQuery");
 
     const nav = useNavigate();
 
@@ -67,7 +68,7 @@ function ProfilePage(props) {
             <div css={s.container}>
                 <div css={s.userBox}>
                     <div css={s.userimg} onClick={handleImageChangeOnClick}>
-                        <img src="" alt="" />
+                        <img src={getUserInfo?.data.img} alt="" />
                     </div>
                     <div css={s.userInfo}>
                         <div></div>
