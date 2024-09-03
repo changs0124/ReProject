@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.ReProject.repository.UserMapper">
+    <resultMap id="userResultMap" type="com.study.ReProject.entity.User">
+        <id property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="img" column="img"/>
+        <collection property="userRoles" javaType="java.util.Set" resultMap="userRolesResultMap"/>
+    </resultMap>
+
+    <resultMap id="userRolesResultMap" type="com.study.ReProject.entity.UserRoles">
+        <id property="userRolesId" column="user_roles_id"/>
+        <result property="userId" column="ur_user_id"/>
+        <result property="roleId" column="ur_role_id"/>
+        <association property="role" resultMap="roleResultMap" />
+    </resultMap>
+
+    <resultMap id="roleResultMap" type="com.study.ReProject.entity.Role">
+        <id property="roleId" column="role_id"/>
+        <result property="rolename" column="role_name"/>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        insert into user_tb
+        values(0, #{username}, #{password}, #{name}, default)
+    </insert>
+    <delete id="deleteById">
+        delete
+        from
+            user_tb
+        where
+            userId = #{userId}
+    </delete>
+    <select id="findByUsername" resultMap="userResultMap">
+        select
+            u.userId as user_id,
+            u.username,
+            u.password,
+            u.name,
+            u.img,
+            ur.user_rolesId as user_roles_id,
+            ur.userId as ur_user_id,
+            ur.roleId as ur_role_id,
+            r.roleId as role_id,
+            r.rolename as role_name
+        from
+            user_tb u
+            left outer join user_roles_tb ur on(ur.user_rolesId = u.userId)
+            left outer join role_tb r on(r.roleId = ur.roleId)
+        where
+            u.username = #{username}
+    </select>
+    <select id="findById" resultMap="userResultMap">
+        select
+            u.userId as user_id,
+            u.username,
+            u.password,
+            u.name,
+            u.img,
+            ur.user_rolesId as user_roles_id,
+            ur.userId as ur_user_id,
+            ur.roleId as ur_role_id,
+            r.roleId as role_id,
+            r.rolename as role_name
+        from
+            user_tb u
+            left outer join user_roles_tb ur on(ur.user_rolesId = u.userId)
+            left outer join role_tb r on(r.roleId = ur.roleId)
+        where
+            u.userId = #{userId}
+    </select>
+</mapper>

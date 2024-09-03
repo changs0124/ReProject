@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.ReProject.repository.UserRolesMapper">
+    <insert id="save">
+        insert into user_roles_tb
+        values(0, #{userId}, #{roleId})
+    </insert>
+    <delete id="deleteByUserId">
+        delete
+            from
+            user_roles_tb
+        where
+            userId = #{userId}
+    </delete>
+
+</mapper>

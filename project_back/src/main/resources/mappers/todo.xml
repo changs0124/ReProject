@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.ReProject.repository.TodoMapper">
+    <insert id="save">
+        insert into todo_tb
+        values (0, #{userId}, #{title}, #{content}, #{important}, 1, #{todoDateTime}, now(), now());
+    </insert>
+    <update id="updateStatus">
+        update
+            todo_tb
+        set
+            status = if(status = 1, 2, 1)
+        where
+            todoId = #{todoId}
+    </update>
+    <update id="modifyTodoByTodoId">
+        update
+            todo_tb
+        set
+            title = #{title},
+            content = #{content},
+            important = #{important},
+            status = #{status},
+            todoDateTime = #{todoDateTime},
+            updateDateTime = now()
+        where
+            todoId = #{todoId} and userId = #{userId}
+    </update>
+    <delete id="deleteTodoByTodoId">
+        delete
+        from
+            todo_tb
+        where
+            todoId = #{todoId}
+    </delete>
+    <select id="getTodoAll" resultType="com.study.ReProject.entity.Todo">
+        select
+            todoId,
+            userId,
+            title,
+            content,
+            important,
+            status,
+            todoDateTime
+        from
+            todo_tb
+        where
+            userId = #{userId}
+    </select>
+    <select id="getTodoToday" resultType="com.study.ReProject.entity.Todo">
+        select
+            todoId,
+            userId,
+            title,
+            content,
+            important,
+            status,
+            todoDateTime
+        from
+            todo_tb
+        where
+            userId = #{userId} and todoDateTime like concat(substr(now(), 1, 10), "%")
+    </select>
+    <select id="getTodoCounts" resultType="com.study.ReProject.entity.TodoCounts">
+        select
+            (select
+                count(*)
+            from
+                todo_tb
+            where
+                userId = #{userId}) as `all`,
+
+            (select
+                count(*)
+            from
+                todo_tb
+            where
+                userId = #{userId}
+                and todoDateTime like concat(substr(now(), 1, 10), "%")) as `today`,
+
+            (select
+                count(*)
+            from
+                todo_tb
+            where
+                userId = #{userId}
+                and important = 2) as `important`,
+
+            (select
+                count(*)
+            from
+                todo_tb
+            where
+                userId = #{userId}
+                and status = 2) as `done`
+
+    </select>
+</mapper>
